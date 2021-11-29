@@ -1,3 +1,9 @@
+$primary: #f76c6c;
+$secondary: #39424e;
+$light: #e8e8e8;
+
+@import "~bootstrap/scss/bootstrap";
+
 body {
-    background-color: lightgray;
+    background-color: $light;
 }
