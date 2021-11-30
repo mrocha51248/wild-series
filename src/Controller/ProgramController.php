@@ -12,6 +12,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProgramController extends AbstractController
 {
     /**
+     * @Route("/", name="index")
+     */
+    public function index(): Response
+    {
+        return $this->render('program/index.html.twig', [
+        ]);
+    }
+    
+    /**
      * @Route("/{id<\d+>}", methods={"GET"}, name="show")
      */
     public function show(int $id): Response
