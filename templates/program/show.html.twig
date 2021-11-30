@@ -1,5 +1,7 @@
 {% extends "base.html.twig" %}
 
+{% block title %}{{ program.title }}{% endblock %}
+
 {% block body %}
 <div class="media">
     <img class="align-self-start mr-3" src="{{program.poster}}" alt="{{ program.title }} poster">
@@ -9,5 +11,4 @@
         <p>Catégorie : {{ program.category.name }}</p>
     </div>
 </div>
-<a href="{{ path('program_index') }}">Retour à la liste des programmes</a>
 {% endblock %}
