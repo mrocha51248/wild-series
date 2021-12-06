@@ -10,8 +10,15 @@
     <p>Episodes :</p>
     <div>
     {% for episode in season.episodes %}
+        {%
+            set episodeUrl = path("program_episode_show", {
+                    programId: program.id,
+                    seasonId: season.id,
+                    episodeId: episode.id,
+                })
+        %}
         <div>
-            <h2>{{ episode.number }} / {{ episode.title }}</h2>
+            <h2>{{ episode.number }} / <a href="{{ episodeUrl }}">{{ episode.title }}</a></h2>
             <p>{{ episode.synopsis }}</p>
         </div>
     {% endfor %}

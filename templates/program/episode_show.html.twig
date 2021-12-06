@@ -1,0 +1,16 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Saison {{ season.number }}{% endblock %}
+
+{% block body %}
+<div class="media">
+    {% set programUrl = path("program_show", { id: program.id }) %}
+    {% set seasonUrl = path("program_season_show", { program: program.id, season: season.id }) %}
+    <h1 class="mt-0"><a href="{{ programUrl }}">{{ program.title }}</a></h1>
+    <p><a href="{{ seasonUrl }}">Saison {{ season.number }}</a></p>
+    <div>
+        <h2>{{ episode.number }} / {{ episode.title }}</h2>
+        <p>{{ episode.synopsis }}</p>
+    </div>
+</div>
+{% endblock %}
