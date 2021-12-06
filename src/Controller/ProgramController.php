@@ -45,18 +45,52 @@ class ProgramController extends AbstractController
             return $this->redirectToRoute('program_index');
         }
         return $this->render('program/new.html.twig', [
+            "program" => $program,
             "form" => $form->createView(),
         ]);
     }
 
     /**
-     * @Route("/{id}", name="show")
+     * @Route("/{id}", name="show", methods="GET")
      */
     public function show(Program $program): Response
     {
         return $this->render('program/show.html.twig', [
             'program' => $program,
         ]);
+    }
+
+    /**
+     * @Route("/{id}/edit", name="edit")
+     */
+    public function edit(Request $request, Program $program): Response
+    {
+        $form = $this->createForm(ProgramType::class, $program);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($program);
+            $entityManager->flush();
+            return $this->redirectToRoute('program_index');
+        }
+        return $this->render('program/edit.html.twig', [
+            "program" => $program,
+            "form" => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/{id}", name="delete", methods="POST")
+     */
+    public function delete(Request $request, Program $program): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$program->getId(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($program);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('program_index', [], Response::HTTP_SEE_OTHER);
     }
 
     /**
