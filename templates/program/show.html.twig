@@ -10,7 +10,7 @@
         <p>{{ program.summary }}</p>
         <p>Catégorie : {{ program.category.name }}</p>
         {% if program.seasons %}
-            <p>Saisons :</p>
+            <p><strong>Saisons</strong> :</p>
             <ul>
             {% for season in program.seasons %}
                 {% set url = path("program_season_show", { program: program.id, season: season.id }) %}
@@ -18,6 +18,14 @@
             {% endfor %}
             </ul>
         {% endif %}
+        <strong>Acteurs :</strong>
+        <ul>
+            {% for actor in program.actors %}
+                <li>{{ actor.name }} </li>
+            {% else %}
+                <li>Aucun acteur pour cette série</li>
+            {% endfor %}
+        </ul>
     </div>
 </div>
 {% endblock %}
