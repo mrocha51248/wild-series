@@ -64,12 +64,14 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         foreach (static::PROGRAMS as $key => $data) {
-            $program = (new Program())
-                ->setTitle($data['title'])
-                ->setSummary($data['summary'])
-                ->setPoster($data['poster']);
+            extract($data);
 
-            $categoryKey = array_search($data['category'], CategoryFixtures::CATEGORIES);
+            $program = (new Program())
+                ->setTitle($title)
+                ->setSummary($summary)
+                ->setPoster($poster);
+
+            $categoryKey = array_search($category, CategoryFixtures::CATEGORIES);
             $program->setCategory($this->getReference('category_' . $categoryKey));
 
             foreach (array_keys(ActorFixtures::ACTORS) as $actorKey) {
