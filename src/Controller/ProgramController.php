@@ -133,7 +133,7 @@ class ProgramController extends AbstractController
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+            $this->denyAccessUnlessGranted('ROLE_CONTRIBUTOR');
 
             $entityManager->persist($comment);
             $entityManager->flush();
@@ -149,5 +149,25 @@ class ProgramController extends AbstractController
             'episode' => $episode,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/comment/{id}", name="comment_delete", methods="POST")
+     */
+    public function deleteComment(Request $request, EntityManagerInterface $entityManager, Comment $comment): Response
+    {
+        if ($this->getUser() !== $comment->getAuthor() && !$this->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException('Only the author can remove the comment!');
+        }
+        if ($this->isCsrfTokenValid('delete' . $comment->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($comment);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('program_episode_show', [
+            'programId' => $comment->getEpisode()->getSeason()->getProgram()->getId(),
+            'seasonId' => $comment->getEpisode()->getSeason()->getId(),
+            'episodeId' => $comment->getEpisode()->getId(),
+        ], Response::HTTP_SEE_OTHER);
     }
 }

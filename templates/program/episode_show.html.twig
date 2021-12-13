@@ -12,8 +12,8 @@
         <h2>{{ episode.number }} / {{ episode.title }}</h2>
         <p>{{ episode.synopsis }}</p>
     </div>
-    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-        <h2>Create new Program</h1>
+    {% if is_granted('ROLE_CONTRIBUTOR') %}
+        <h2>Ecrire un commentaire</h1>
         {{ include('program/_form.html.twig') }}
     {% endif %}
     <div>
@@ -25,6 +25,9 @@
                     <figcaption class="blockquote-footer mb-0 font-italic">{{ comment.author.username }}</figcaption>
                     {% if comment.rate is not null %}
                         <span>Score: {{ comment.rate }}</span>
+                    {% endif %}
+                    {% if app.user == comment.author or is_granted('ROLE_ADMIN') %}
+                        {{ include('program/_delete_comment_form.html.twig') }}
                     {% endif %}
                 </figure>
             {% endfor %}
