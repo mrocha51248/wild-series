@@ -31,7 +31,7 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        foreach (static::USERS as $userData) {
+        foreach (static::USERS as $key => $userData) {
             extract($userData);
 
             $user = new User();
@@ -42,6 +42,7 @@ class UserFixtures extends Fixture
                 ->setRoles($roles);
 
             $manager->persist($user);
+            $this->addReference('user_' . $key, $user);
         }
         
         $manager->flush();

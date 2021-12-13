@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @Route("/program", name="program_")
@@ -38,7 +39,9 @@ class ProgramController extends AbstractController
      */
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $program = new Program();
+        $program = (new Program())
+            ->setOwner($this->getUser());
+
         $form = $this->createForm(ProgramType::class, $program);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -67,6 +70,9 @@ class ProgramController extends AbstractController
      */
     public function edit(Request $request, EntityManagerInterface $entityManager, Program $program): Response
     {
+        if ($this->getUser() !== $program->getOwner() && !$this->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException('Only the owner can edit the program!');
+        }
         $form = $this->createForm(ProgramType::class, $program);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -85,6 +91,9 @@ class ProgramController extends AbstractController
      */
     public function delete(Request $request, EntityManagerInterface $entityManager, Program $program): Response
     {
+        if ($this->getUser() !== $program->getOwner() && !$this->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException('Only the owner can remove the program!');
+        }
         if ($this->isCsrfTokenValid('delete' . $program->getId(), $request->request->get('_token'))) {
             $entityManager->remove($program);
             $entityManager->flush();
@@ -105,7 +114,7 @@ class ProgramController extends AbstractController
     }
 
     /**
-     * @Route("/program/{programId}/season/{seasonId}/episode/{episodeId}", name="episode_show")
+     * @Route("/{programId}/season/{seasonId}/episode/{episodeId}", name="episode_show")
      * @ParamConverter("program", class="App\Entity\Program", options={"mapping": {"programId": "id"}})
      * @ParamConverter("season", class="App\Entity\Season", options={"mapping": {"seasonId": "id"}})
      * @ParamConverter("episode", class="App\Entity\Episode", options={"mapping": {"episodeId": "id"}})

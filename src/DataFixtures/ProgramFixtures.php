@@ -69,7 +69,8 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
             $program = (new Program())
                 ->setTitle($title)
                 ->setSummary($summary)
-                ->setPoster($poster);
+                ->setPoster($poster)
+                ->setOwner($this->getReference('user_1'));
 
             $categoryKey = array_search($category, CategoryFixtures::CATEGORIES);
             $program->setCategory($this->getReference('category_' . $categoryKey));
@@ -89,6 +90,7 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
         return [
             ActorFixtures::class,
             CategoryFixtures::class,
+            UserFixtures::class,
         ];
     }
 }
