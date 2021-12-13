@@ -2,10 +2,13 @@
 // src/Controller/ProgramController.php
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Episode;
 use App\Entity\Program;
 use App\Entity\Season;
+use App\Form\CommentType;
 use App\Form\ProgramType;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,13 +36,12 @@ class ProgramController extends AbstractController
     /**
      * @Route("/new", name="new")
      */
-    public function new(Request $request): Response
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $program = new Program();
         $form = $this->createForm(ProgramType::class, $program);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($program);
             $entityManager->flush();
             return $this->redirectToRoute('program_index');
@@ -63,12 +65,11 @@ class ProgramController extends AbstractController
     /**
      * @Route("/{id}/edit", name="edit")
      */
-    public function edit(Request $request, Program $program): Response
+    public function edit(Request $request, EntityManagerInterface $entityManager, Program $program): Response
     {
         $form = $this->createForm(ProgramType::class, $program);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($program);
             $entityManager->flush();
             return $this->redirectToRoute('program_index');
@@ -82,10 +83,9 @@ class ProgramController extends AbstractController
     /**
      * @Route("/{id}", name="delete", methods="POST")
      */
-    public function delete(Request $request, Program $program): Response
+    public function delete(Request $request, EntityManagerInterface $entityManager, Program $program): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$program->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
+        if ($this->isCsrfTokenValid('delete' . $program->getId(), $request->request->get('_token'))) {
             $entityManager->remove($program);
             $entityManager->flush();
         }
@@ -110,12 +110,35 @@ class ProgramController extends AbstractController
      * @ParamConverter("season", class="App\Entity\Season", options={"mapping": {"seasonId": "id"}})
      * @ParamConverter("episode", class="App\Entity\Episode", options={"mapping": {"episodeId": "id"}})
      */
-    public function showEpisode(Program $program, Season $season, Episode $episode): Response
-    {
+    public function showEpisode(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        Program $program,
+        Season $season,
+        Episode $episode
+    ): Response {
+        $comment = (new Comment())
+            ->setAuthor($this->getUser())
+            ->setEpisode($episode);
+
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            $routeName = $request->attributes->get('_route');
+            $routeParameters = $request->attributes->get('_route_params');
+            return $this->redirectToRoute($routeName, $routeParameters);
+        }
+
         return $this->render('program/episode_show.html.twig', [
             'program' => $program,
             'season' => $season,
             'episode' => $episode,
+            'form' => $form->createView(),
         ]);
     }
 }

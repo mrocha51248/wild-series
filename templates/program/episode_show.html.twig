@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Saison {{ season.number }}{% endblock %}
+{% block title %}Episode {{ episode.number }}{% endblock %}
 
 {% block body %}
 <div class="media">
@@ -11,6 +11,24 @@
     <div>
         <h2>{{ episode.number }} / {{ episode.title }}</h2>
         <p>{{ episode.synopsis }}</p>
+    </div>
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <h2>Create new Program</h1>
+        {{ include('program/_form.html.twig') }}
+    {% endif %}
+    <div>
+        {% if episode.comments is not empty %}
+            <p><strong>Commentaires</strong> :</p>
+            {% for comment in episode.comments %}
+                <figure class="bg-white p-3 rounded" style="border-left: .25rem solid #a34e78;">
+                    <blockquote class="blockquote pb-2"><pre>{{ comment.comment }}</pre></blockquote>
+                    <figcaption class="blockquote-footer mb-0 font-italic">{{ comment.author.username }}</figcaption>
+                    {% if comment.rate is not null %}
+                        <span>Score: {{ comment.rate }}</span>
+                    {% endif %}
+                </figure>
+            {% endfor %}
+        {% endif %}
     </div>
 </div>
 {% endblock %}

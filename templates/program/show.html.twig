@@ -9,7 +9,7 @@
         <h1 class="mt-0">{{ program.title }}</h1>
         <p>{{ program.summary }}</p>
         <p>Catégorie : {{ program.category.name }}</p>
-        {% if program.seasons %}
+        {% if program.seasons is not empty %}
             <p><strong>Saisons</strong> :</p>
             <ul>
             {% for season in program.seasons %}
