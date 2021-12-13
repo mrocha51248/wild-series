@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,7 +54,7 @@ class AppController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
             $user->setPassword(
-            $userPasswordHasher->hashPassword(
+                $userPasswordHasher->hashPassword(
                     $user,
                     $form->get('plainPassword')->getData()
                 )
@@ -68,6 +69,13 @@ class AppController extends AbstractController
 
         return $this->render('app/register.html.twig', [
             'registrationForm' => $form->createView(),
+        ]);
+    }
+
+    public function navbarTop(CategoryRepository $categoryRepository): Response
+    {
+        return $this->render('app/_navbartop.html.twig', [
+            'categories' => $categoryRepository->findBy([], ['id' => 'DESC'])
         ]);
     }
 }
