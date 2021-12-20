@@ -1,0 +1,10 @@
+{% extends "baseEmail.html.twig" %}
+
+{% block title %}New episode{% endblock %}
+
+{% block body %}
+    <h1>New episode {{ episode.title }} created</h1>
+    <p>Hello, the new episode {{ episode.number }} {{ episode.title }} has been created on Wild Series</p>
+    {% set url = absolute_url(path('program_show', { slug: episode.season.program.slug })) %}
+    <p>Program: <a href="{{ url }}">{{ episode.season.program.title }}</a></p>
+{% endblock %}
