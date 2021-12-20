@@ -25,8 +25,8 @@
                 <td>{{ season.description }}</td>
                 <td>{{ season.program.title }}</td>
                 <td>
-                    <a href="{{ path('season_show', {'id': season.id}) }}">show</a>
-                    <a href="{{ path('season_edit', {'id': season.id}) }}">edit</a>
+                    <a href="{{ path('season_show', {'slug': season.slug}) }}">show</a>
+                    <a href="{{ path('season_edit', {'slug': season.slug}) }}">edit</a>
                 </td>
             </tr>
         {% else %}

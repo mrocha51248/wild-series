@@ -8,6 +8,7 @@ use App\Entity\Program;
 use App\Entity\Season;
 use App\Form\CommentType;
 use App\Form\ProgramType;
+use App\Service\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,14 +38,19 @@ class ProgramController extends AbstractController
     /**
      * @Route("/new", name="new")
      */
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        Slugify $slugify
+    ): Response {
         $program = (new Program())
             ->setOwner($this->getUser());
 
         $form = $this->createForm(ProgramType::class, $program);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $slug = $slugify->generate($program->getTitle());
+            $program->setSlug($slug);
             $entityManager->persist($program);
             $entityManager->flush();
             return $this->redirectToRoute('program_index');
@@ -56,7 +62,7 @@ class ProgramController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="show", methods="GET")
+     * @Route("/{slug}", name="show", methods="GET")
      */
     public function show(Program $program): Response
     {
@@ -66,17 +72,22 @@ class ProgramController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="edit")
+     * @Route("/{slug}/edit", name="edit")
      */
-    public function edit(Request $request, EntityManagerInterface $entityManager, Program $program): Response
-    {
+    public function edit(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        Program $program,
+        Slugify $slugify
+    ): Response {
         if ($this->getUser() !== $program->getOwner() && !$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Only the owner can edit the program!');
         }
         $form = $this->createForm(ProgramType::class, $program);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($program);
+            $slug = $slugify->generate($program->getTitle());
+            $program->setSlug($slug);
             $entityManager->flush();
             return $this->redirectToRoute('program_index');
         }
@@ -87,7 +98,7 @@ class ProgramController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="delete", methods="POST")
+     * @Route("/{slug}", name="delete", methods="POST")
      */
     public function delete(Request $request, EntityManagerInterface $entityManager, Program $program): Response
     {
@@ -103,7 +114,9 @@ class ProgramController extends AbstractController
     }
 
     /**
-     * @Route("/{program}/season/{season}", name="season_show")
+     * @Route("/{programSlug}/season/{seasonSlug}", name="season_show")
+     * @ParamConverter("program", class="App\Entity\Program", options={"mapping": {"programSlug": "slug"}})
+     * @ParamConverter("season", class="App\Entity\Season", options={"mapping": {"seasonSlug": "slug"}})
      */
     public function showSeason(Program $program, Season $season): Response
     {
@@ -114,10 +127,10 @@ class ProgramController extends AbstractController
     }
 
     /**
-     * @Route("/{programId}/season/{seasonId}/episode/{episodeId}", name="episode_show")
-     * @ParamConverter("program", class="App\Entity\Program", options={"mapping": {"programId": "id"}})
-     * @ParamConverter("season", class="App\Entity\Season", options={"mapping": {"seasonId": "id"}})
-     * @ParamConverter("episode", class="App\Entity\Episode", options={"mapping": {"episodeId": "id"}})
+     * @Route("/{programSlug}/season/{seasonSlug}/episode/{episodeSlug}", name="episode_show")
+     * @ParamConverter("program", class="App\Entity\Program", options={"mapping": {"programSlug": "slug"}})
+     * @ParamConverter("season", class="App\Entity\Season", options={"mapping": {"seasonSlug": "slug"}})
+     * @ParamConverter("episode", class="App\Entity\Episode", options={"mapping": {"episodeSlug": "slug"}})
      */
     public function showEpisode(
         Request $request,
@@ -165,9 +178,9 @@ class ProgramController extends AbstractController
         }
 
         return $this->redirectToRoute('program_episode_show', [
-            'programId' => $comment->getEpisode()->getSeason()->getProgram()->getId(),
-            'seasonId' => $comment->getEpisode()->getSeason()->getId(),
-            'episodeId' => $comment->getEpisode()->getId(),
+            'programSlug' => $comment->getEpisode()->getSeason()->getProgram()->getSlug(),
+            'seasonSlug' => $comment->getEpisode()->getSeason()->getSlug(),
+            'episodeSlug' => $comment->getEpisode()->getSlug(),
         ], Response::HTTP_SEE_OTHER);
     }
 }

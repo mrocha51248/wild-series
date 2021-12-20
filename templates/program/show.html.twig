@@ -13,7 +13,7 @@
             <p><strong>Saisons</strong> :</p>
             <ul>
             {% for season in program.seasons %}
-                {% set url = path("program_season_show", { program: program.id, season: season.id }) %}
+                {% set url = path("program_season_show", { programSlug: program.slug, seasonSlug: season.slug }) %}
                 <li>{{ season.number }} / <a href="{{ url }}">{{ season.description }}</a> ({{ season.year }})</li>
             {% endfor %}
             </ul>
