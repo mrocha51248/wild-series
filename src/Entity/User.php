@@ -49,10 +49,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $programs;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Program::class, inversedBy="viewers")
+     * @ORM\JoinTable(name="watchlist")
+     */
+    private $watchlist;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->programs = new ArrayCollection();
+        $this->watchlist = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -195,6 +202,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $program->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Program[]
+     */
+    public function getWatchlist(): Collection
+    {
+        return $this->watchlist;
+    }
+
+    public function addToWatchlist(Program $watchlist): self
+    {
+        if (!$this->watchlist->contains($watchlist)) {
+            $this->watchlist[] = $watchlist;
+        }
+
+        return $this;
+    }
+
+    public function removeFromWatchlist(Program $watchlist): self
+    {
+        $this->watchlist->removeElement($watchlist);
 
         return $this;
     }

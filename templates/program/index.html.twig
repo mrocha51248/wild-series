@@ -18,6 +18,11 @@
         {% if is_granted("ROLE_ADMIN") %}
             <a href="{{ path('program_edit', { slug: program.slug }) }}"> Éditer</a>
         {% endif %}
+        {% if is_granted("IS_AUTHENTICATED_FULLY") %}
+            <a href="{{ path('program_watchlist', {id: program.id})}}">
+                <i class="bi {{ app.user.watchlist.contains(program) ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+            </a>
+        {% endif %}
     </div>
 {% else %}
     Aucune série trouvée.

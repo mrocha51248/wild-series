@@ -12,6 +12,7 @@ use App\Form\SearchProgramType;
 use App\Repository\ProgramRepository;
 use App\Service\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -210,5 +211,21 @@ class ProgramController extends AbstractController
             'seasonSlug' => $comment->getEpisode()->getSeason()->getSlug(),
             'episodeSlug' => $comment->getEpisode()->getSlug(),
         ], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * @Route("/{id}/watchlist", name="watchlist")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function addToWatchList(Program $program, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->getUser()->getWatchlist()->contains($program)) {
+            $this->getUser()->removeFromWatchlist($program);
+        } else {
+            $this->getUser()->addToWatchlist($program);
+        }
+        $entityManager->flush();
+
+        return $this->redirectToRoute('program_index');
     }
 }
