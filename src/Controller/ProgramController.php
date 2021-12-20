@@ -74,6 +74,8 @@ class ProgramController extends AbstractController
                 ->html($this->renderView('program/newProgramEmail.html.twig', ['program' => $program]));
             $mailer->send($email);
 
+            $this->addFlash('success', 'The new program has been created');
+
             return $this->redirectToRoute('program_index');
         }
         return $this->render('program/new.html.twig', [
@@ -110,6 +112,9 @@ class ProgramController extends AbstractController
             $slug = $slugify->generate($program->getTitle());
             $program->setSlug($slug);
             $entityManager->flush();
+
+            $this->addFlash('success', 'The program has been edited');
+
             return $this->redirectToRoute('program_index');
         }
         return $this->render('program/edit.html.twig', [
@@ -129,6 +134,8 @@ class ProgramController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $program->getId(), $request->request->get('_token'))) {
             $entityManager->remove($program);
             $entityManager->flush();
+
+            $this->addFlash('danger', 'The program has been deleted');
         }
 
         return $this->redirectToRoute('program_index', [], Response::HTTP_SEE_OTHER);
