@@ -1,30 +1,30 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Episode {{ episode.number }}{% endblock %}
+{% block title %}{{ 'episode_number'|trans({'%number%': episode.number}) }}{% endblock %}
 
 {% block body %}
 <div class="media">
     {% set programUrl = path("program_show", { slug: program.slug }) %}
     {% set seasonUrl = path("program_season_show", { programSlug: program.slug, seasonSlug: season.slug }) %}
     <h1 class="mt-0"><a href="{{ programUrl }}">{{ program.title }}</a></h1>
-    <p><a href="{{ seasonUrl }}">Saison {{ season.number }}</a></p>
+    <p><a href="{{ seasonUrl }}">{{ 'season_number'|trans({'%number%': season.number}) }}</a></p>
     <div>
         <h2>{{ episode.number }} / {{ episode.title }}</h2>
         <p>{{ episode.synopsis }}</p>
     </div>
     {% if is_granted('ROLE_CONTRIBUTOR') %}
-        <h2>Ecrire un commentaire</h1>
+        <h2>{{ 'write_comment'|trans }}</h1>
         {{ include('program/_form.html.twig') }}
     {% endif %}
     <div>
         {% if episode.comments is not empty %}
-            <p><strong>Commentaires</strong> :</p>
+            <p><strong>{{ 'comments'|trans }}</strong> :</p>
             {% for comment in episode.comments %}
                 <figure class="bg-white p-3 rounded" style="border-left: .25rem solid #a34e78;">
                     <blockquote class="blockquote pb-2"><pre>{{ comment.comment }}</pre></blockquote>
                     <figcaption class="blockquote-footer mb-0 font-italic">{{ comment.author.username }}</figcaption>
                     {% if comment.rate is not null %}
-                        <span>Score: {{ comment.rate }}</span>
+                        <span>{{ 'rating'|trans }}: {{ comment.rate }}</span>
                     {% endif %}
                     {% if app.user == comment.author or is_granted('ROLE_ADMIN') %}
                         {{ include('program/_delete_comment_form.html.twig') }}

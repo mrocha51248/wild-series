@@ -10,7 +10,7 @@
         <p>{{ program.summary }}</p>
         <p>Catégorie : {{ program.category.name }}</p>
         {% if program.seasons is not empty %}
-            <p><strong>Saisons</strong> :</p>
+            <p><strong>{{ 'seasons'|trans }}</strong> :</p>
             <ul>
             {% for season in program.seasons %}
                 {% set url = path("program_season_show", { programSlug: program.slug, seasonSlug: season.slug }) %}
@@ -18,12 +18,12 @@
             {% endfor %}
             </ul>
         {% endif %}
-        <strong>Acteurs :</strong>
+        <strong>{{ 'actors'|trans }} :</strong>
         <ul>
             {% for actor in program.actors %}
                 <li>{{ actor.name }} </li>
             {% else %}
-                <li>Aucun acteur pour cette série</li>
+                <li>{{ 'no_actor_found_for_program'|trans }}</li>
             {% endfor %}
         </ul>
     </div>

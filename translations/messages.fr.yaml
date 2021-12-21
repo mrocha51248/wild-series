@@ -1,0 +1,43 @@
+loading: Chargement
+close: Fermer
+welcome: Bienvenue
+view_entry: Voir la fiche
+no_actor_found: Pas d'acteur trouvé
+actor.index.title: Tout les acteurs
+actor.index.heading: Tout les acteurs de la table actor
+category.show.heading: Séries dans la catégorie %name%
+no_program_found: Pas de série trouvée
+category.index.title: Toutes les catégories
+category.index.heading: Toutes les catégories de la table category
+categories.add: Ajouter une catégorie
+account.username: Nom d'utilisateur
+account.password: Mot de passe
+account.log_in: Se connecter
+home: Acceuil
+programs: Séries
+categories: Catégories
+actors: Acteurs
+account.log_out: Se déconnecter
+account.register: S'enregistrer
+register_title: Enregistrement
+seasons: Saisons
+no_actor_found_for_program: Pas d'acteur trouvé pour cette série
+save: Sauvegarder
+season_number_of: Saison %number% de
+episodes: Episodes
+all_programs: Toutes les séries
+search: Rechercher
+category: Catégorie
+view: Voir
+edit: Editer
+episode_number: Episode n°%number%
+season_number: Season n°%number%
+write_comment: Ecrire un commentaire
+comments: Commentaires
+rating: Note
+delete_confirm: Etes vous sure de vouloir supprimer cet element
+delete: Effacer
+edit_program: Editer série
+update: Modifier
+back_to_list: Retour à la liste
+create_program: Créer une série

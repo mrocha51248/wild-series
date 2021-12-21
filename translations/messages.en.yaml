@@ -1,0 +1,43 @@
+loading: Loading
+close: Close
+welcome: Welcome
+view_entry: View entry
+no_actor_found: No actor found
+actor.index.title: All actors
+actor.index.heading: All actors of actor table
+category.show.heading: Programs in category %name%
+no_program_found: No program found
+category.index.title: All categories
+category.index.heading: All categories of category table
+categories.add: Add category
+account.username: Username
+account.password: Password
+account.log_in: Log in
+home: Home
+programs: Programs
+categories: Categories
+actors: Actors
+account.log_out: Log out
+account.register: Register
+register_title: Register
+seasons: Seasons
+no_actor_found_for_program: No actor found for this program
+save: Save
+season_number_of: Season %number% of
+episodes: Episodes
+all_programs: All programs
+search: Search
+category: Category
+view: View
+edit: Edit
+episode_number: Episode %number%
+season_number: Season %number%
+write_comment: Write a comment
+comments: Comments
+rating: Rating
+delete_confirm: Are you sure you want to delete this item
+delete: Delete
+edit_program: Edit program
+update: Update
+back_to_list: Back to list
+create_program: Create new program

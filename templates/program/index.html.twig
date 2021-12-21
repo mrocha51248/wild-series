@@ -1,22 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}All programs{% endblock %}
+{% block title %}{{ 'all_programs'|trans }}{% endblock %}
 
 {% block body %}
-<h1>Toutes les séries de la table program :</h1>
+<h1>{{ 'all_programs'|trans }} :</h1>
 
 {{ form_start(form) }}
-{{ form_widget(form) }}
-<button>Search</button>
+{{ form_row(form.search, {label: 'search'}) }}
+<button>{{ 'search'|trans }}</button>
 {{ form_end(form) }}
 
 {% for program in programs %}
     <div>
-        <h2>{{ loop.index }} / {{ program.title }} - Catégorie : {{ program.category.name }}</h2>
+        <h2>{{ loop.index }} / {{ program.title }} - {{ 'category'|trans }} : {{ program.category.name }}</h2>
         <p>{{ program.summary }}</p>
-        <a href="{{ path("program_show", { slug: program.slug }) }}">Voir la fiche</a>
+        <a href="{{ path("program_show", { slug: program.slug }) }}">{{ 'view'|trans }}</a>
         {% if is_granted("ROLE_ADMIN") %}
-            <a href="{{ path('program_edit', { slug: program.slug }) }}"> Éditer</a>
+            <a href="{{ path('program_edit', { slug: program.slug }) }}"> {{ 'edit'|trans }}</a>
         {% endif %}
         {% if is_granted("IS_AUTHENTICATED_FULLY") %}
             <a class="watchlist-toggle" href="{{ path('program_watchlist', {id: program.id})}}">
@@ -25,6 +25,6 @@
         {% endif %}
     </div>
 {% else %}
-    Aucune série trouvée.
+    {{ 'no_program_found'|trans }}
 {% endfor %}
 {% endblock %}

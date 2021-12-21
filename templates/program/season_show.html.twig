@@ -5,9 +5,9 @@
 {% block body %}
 <div class="media">
     {% set programUrl = path("program_show", { slug: program.slug }) %}
-    <h1 class="mt-0">Saison {{ season.number }} de <a href="{{ programUrl }}">{{ program.title }}</a></h1>
+    <h1 class="mt-0">{{ 'season_number_of'|trans({'%number%': season.number}) }} <a href="{{ programUrl }}">{{ program.title }}</a></h1>
     <p>{{ season.description }}</p>
-    <p>Episodes :</p>
+    <p>{{ 'episodes'|trans }} :</p>
     <div>
     {% for episode in season.episodes %}
         {%

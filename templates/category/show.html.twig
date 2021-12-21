@@ -3,15 +3,15 @@
 {% block title %}{{ category.name }}{% endblock %}
 
 {% block body %}
-<h1>Séries de la catégorie {{ category.name }} :</h1>
+<h1>{{ 'category.show.heading'|trans({'%name%': category.name}) }}:</h1>
 
 {% for program in programs %}
     <div>
         <h2>{{ program.id }} / {{ program.title }}</h2>
         <p>{{ program.summary }}</p>
-        <a href="{{ path("program_show", { slug: program.slug }) }}">Voir la fiche</a>
+        <a href="{{ path("program_show", { slug: program.slug }) }}">{{ 'view_entry'|trans }}</a>
     </div>
 {% else %}
-    Aucune série trouvée.
+    {{ 'no_program_found'|trans }}
 {% endfor %}
 {% endblock %}

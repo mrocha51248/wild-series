@@ -8,13 +8,15 @@
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.scss';
 
-import { Tooltip, Toast, Popover } from 'bootstrap';
-import 'bootstrap-icons/font/bootstrap-icons.css';
-
 // start the Stimulus application
 import './bootstrap';
 
+import { Tooltip, Toast, Popover } from 'bootstrap';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 import 'Hinclude/hinclude';
+
+import 'flag-icons/css/flag-icons.css';
 
 document.querySelectorAll(".watchlist-toggle").forEach(function(element) {
     element.addEventListener('click', function(event) {
