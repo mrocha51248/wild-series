@@ -4,13 +4,20 @@ namespace App\Form;
 
 use App\Entity\Actor;
 use App\Entity\Program;
+use App\Service\Slugify;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProgramType extends AbstractType
 {
+    public function __construct(private Slugify $slugify)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -23,7 +30,13 @@ class ProgramType extends AbstractType
                 'multiple' => true,
                 'expanded' => true,
                 'by_reference' => false,
-            ]);
+            ])
+            ->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
+                /** @var Program $program */
+                $program = $event->getData();
+                $program->setSlug($this->slugify->generate($program->getTitle()));
+            })
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -22,13 +22,12 @@ class SeasonFixtures extends Fixture implements DependentFixtureInterface
                 $program = $this->getReference($key);
 
                 for ($i = 1; $i <= 10; ++$i) {
-                    $description = 'Saison ' . $i;
                     $season = (new Season())
                         ->setProgram($program)
                         ->setNumber($i)
                         ->setYear(2022)
-                        ->setDescription($description)
-                        ->setSlug($this->slugify->generate($description))
+                        ->setDescription("Saison $i de {$program->getTitle()}")
+                        ->setSlug($this->slugify->generate("Saison $i"))
                     ;
 
                     $manager->persist($season);

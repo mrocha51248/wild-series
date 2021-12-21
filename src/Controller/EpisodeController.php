@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Episode;
 use App\Form\EpisodeType;
 use App\Repository\EpisodeRepository;
-use App\Service\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +28,6 @@ class EpisodeController extends AbstractController
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
-        Slugify $slugify,
         MailerInterface $mailer
     ): Response {
         $episode = new Episode();
@@ -37,8 +35,6 @@ class EpisodeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $slug = $slugify->generate($episode->getTitle());
-            $episode->setSlug($slug);
             $entityManager->persist($episode);
             $entityManager->flush();
 
@@ -60,7 +56,7 @@ class EpisodeController extends AbstractController
         ]);
     }
 
-    #[Route('/{slug}', name: 'episode_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'episode_show', methods: ['GET'])]
     public function show(Episode $episode): Response
     {
         return $this->render('episode/show.html.twig', [
@@ -68,19 +64,16 @@ class EpisodeController extends AbstractController
         ]);
     }
 
-    #[Route('/{slug}/edit', name: 'episode_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'episode_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
         Episode $episode,
-        EntityManagerInterface $entityManager,
-        Slugify $slugify
+        EntityManagerInterface $entityManager
     ): Response {
         $form = $this->createForm(EpisodeType::class, $episode);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $slug = $slugify->generate($episode->getTitle());
-            $episode->setSlug($slug);
             $entityManager->flush();
 
             $this->addFlash('success', 'The episode has been edited');
@@ -94,7 +87,7 @@ class EpisodeController extends AbstractController
         ]);
     }
 
-    #[Route('/{slug}', name: 'episode_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'episode_delete', methods: ['POST'])]
     public function delete(Request $request, Episode $episode, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $episode->getId(), $request->request->get('_token'))) {

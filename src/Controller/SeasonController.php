@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Season;
 use App\Form\SeasonType;
 use App\Repository\SeasonRepository;
-use App\Service\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,16 +25,13 @@ class SeasonController extends AbstractController
     #[Route('/new', name: 'season_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
-        EntityManagerInterface $entityManager,
-        Slugify $slugify
+        EntityManagerInterface $entityManager
     ): Response {
         $season = new Season();
         $form = $this->createForm(SeasonType::class, $season);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $slug = $slugify->generate($season->getNumber());
-            $season->setSlug($slug);
             $entityManager->persist($season);
             $entityManager->flush();
 
@@ -50,7 +46,7 @@ class SeasonController extends AbstractController
         ]);
     }
 
-    #[Route('/{slug}', name: 'season_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'season_show', methods: ['GET'])]
     public function show(Season $season): Response
     {
         return $this->render('season/show.html.twig', [
@@ -58,19 +54,16 @@ class SeasonController extends AbstractController
         ]);
     }
 
-    #[Route('/{slug}/edit', name: 'season_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'season_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
         Season $season,
-        EntityManagerInterface $entityManager,
-        Slugify $slugify
+        EntityManagerInterface $entityManager
     ): Response {
         $form = $this->createForm(SeasonType::class, $season);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $slug = $slugify->generate($season->getNumber());
-            $season->setSlug($slug);
             $entityManager->flush();
 
             $this->addFlash('success', 'The season has been edited');
@@ -84,7 +77,7 @@ class SeasonController extends AbstractController
         ]);
     }
 
-    #[Route('/{slug}', name: 'season_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'season_delete', methods: ['POST'])]
     public function delete(Request $request, Season $season, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $season->getId(), $request->request->get('_token'))) {

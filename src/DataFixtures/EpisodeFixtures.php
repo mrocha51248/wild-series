@@ -28,7 +28,7 @@ class EpisodeFixtures extends Fixture implements DependentFixtureInterface
                         ->setTitle($title)
                         ->setSlug($this->slugify->generate($title))
                         ->setNumber($i)
-                        ->setSynopsis('Il se passe des trucs');
+                        ->setSynopsis("Episode $i de la saison {$season->getNumber()} de {$season->getProgram()->getTitle()}");
 
                     $manager->persist($episode);
                     $this->addReference('episode_' . $i . '_' . $key, $season);
