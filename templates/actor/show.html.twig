@@ -4,7 +4,7 @@
 
 {% block body %}
 <h1>{{ actor.name }}</h1>
-
+<img src="{{ vich_uploader_asset(actor) }}" alt="{{ actor.name }} picture">
 {% for program in actor.programs %}
     <div>
         <h2>{{ program.id }} / {{ program.title }}</h2>
@@ -12,6 +12,6 @@
         <a href="{{ path("program_show", { slug: program.slug }) }}">{{ 'view_entry'|trans }}</a>
     </div>
 {% else %}
-    {{ 'no_actor_found'|trans }}
+    {{ 'no_program_found'|trans }}
 {% endfor %}
 {% endblock %}
