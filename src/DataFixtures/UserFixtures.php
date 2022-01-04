@@ -13,12 +13,17 @@ class UserFixtures extends Fixture
         [
             'username' => 'User 1',
             'password' => 'helloworld',
-            'roles' => ['ROLE_CONTRIBUTOR',],
+            'roles' => [],
+        ],
+        [
+            'username' => 'Contributor 1',
+            'password' => 'helloworld',
+            'roles' => ['ROLE_CONTRIBUTOR'],
         ],
         [
             'username' => 'Administrator',
             'password' => 'foobar',
-            'roles' => ['ROLE_ADMIN',],
+            'roles' => ['ROLE_ADMIN'],
         ],
     ];
 
